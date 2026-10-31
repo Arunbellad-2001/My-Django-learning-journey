@@ -215,3 +215,231 @@ CTRL + C
 - How to run the Django development server.
 
 **Day 1 completed – Successfully created and ran my first Django project!** 🚀
+
+# Day 2 – Creating a Django App and URL Routing
+
+## 1. What is a Django App?
+
+A Django project can contain multiple apps.
+
+An **app** is a small part of a Django project that handles a specific task.
+
+For example:
+- `calc` – Calculator application.
+- `blog` – Blog application.
+- `accounts` – User account application.
+- `products` – Product management application.
+
+**Difference between Project and App:**
+
+- Project – The complete website or web application.
+- App – A specific part of the project.
+
+## 2. Creating a Django App Using CMD
+
+First, open CMD and move to your Django project directory.
+
+### Step 1: Activate the Virtual Environment
+
+```cmd
+workon AS
+```
+
+This activates my virtual environment named `AS`.
+
+### Step 2: Create a Django App
+
+Make sure you are inside the folder containing `manage.py`.
+
+Run:
+
+```cmd
+python manage.py startapp calc
+```
+
+This creates a new Django app named `calc`.
+
+### Step 3: Check the Created Files
+
+```cmd
+dir
+```
+
+Open the `calc` folder to see the files created by Django.
+
+### Django App Structure
+
+```text
+calc/
+│
+├── migrations/
+│   └── __init__.py
+│
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models.py
+├── tests.py
+└── views.py
+```
+
+### Important Files
+
+| File | Purpose |
+|---|---|
+| `admin.py` | Used to manage data through the admin panel |
+| `apps.py` | Contains app configuration |
+| `models.py` | Used to create database models |
+| `tests.py` | Used to write test cases |
+| `views.py` | Handles requests and returns responses |
+| `migrations/` | Stores database migration files |
+
+## 3. Creating urls.py Inside the App
+
+Django does not automatically create a `urls.py` file inside a new app.
+
+So, create a new file named `urls.py` inside the `calc` folder.
+
+**calc/urls.py**
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+]
+```
+
+### Explanation
+
+- `from django.urls import path` – Imports the path function.
+- `from . import views` – Imports views from the current app.
+- `urlpatterns` – Stores the URL patterns of the app.
+- `path('', views.home, name='home')` – Connects the home URL to the home view.
+
+## 4. Creating a View
+
+Open `calc/views.py`.
+
+Write the following code:
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Hello World")
+```
+
+### Explanation
+
+- `HttpResponse` – Sends a simple response to the browser.
+- `home()` – A view function that handles the request.
+- `request` – Contains information about the user's request.
+- `HttpResponse("Hello World")` – Displays Hello World in the browser.
+
+## 5. Connecting App URLs to Project URLs
+
+Now we need to connect the `calc` app URLs to the main Django project.
+
+Open:
+
+`my_first_django_project/urls.py`
+
+Import `include` from `django.urls`.
+
+**Project urls.py**
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('', include('calc.urls')),
+    path('admin/', admin.site.urls),
+]
+```
+
+### Explanation
+
+- `include` – Connects the URL patterns of another app.
+- `path('', include('calc.urls'))` – Connects the main website URL to the `calc` app URLs.
+- `path('admin/', admin.site.urls)` – Connects the Django admin panel URL.
+
+## 6. Run the Django Server
+
+Go back to CMD.
+
+Run:
+
+```cmd
+python manage.py runserver
+```
+
+Open this URL in your browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+### Expected Output
+
+```text
+Hello World
+```
+
+Congratulations! My first Django app is working successfully.
+
+---
+
+## 7. How URL Routing Works in Django
+
+When a user opens the website, Django follows this process:
+
+```text
+          Browser
+              |
+              v
+       Project urls.py
+              |
+              v
+         calc/urls.py
+              |
+              v
+         views.py
+              |
+              v
+      HttpResponse()
+              |
+              v
+           Browser
+```
+
+1. The user opens `http://127.0.0.1:8000/`.
+2. Django checks the project `urls.py`.
+3. `include()` sends the URL to `calc/urls.py`.
+4. The app URL connects to the `home()` function.
+5. The view returns `Hello World`.
+6. The browser displays the response.
+
+## 8. Important Commands – Quick Revision
+
+| Command | Use |
+|---|---|
+| `workon AS` | Activate virtual environment |
+| `python manage.py startapp calc` | Create a Django app |
+| `dir` | Display files and folders |
+| `python manage.py runserver` | Start Django server |
+
+## 9. What I Learned Today
+
+- What is a Django app?
+- Difference between a Django project and an app.
+- How to create an app using CMD.
+- How to create `urls.py` inside an app.
+- How to create a view using `HttpResponse`.
+- How to connect app URLs with project URLs using `include()`.
+- How URL routing works in Django.
+
+**Day 2 completed – Successfully created my first Django app and displayed Hello World in the browser!** 🚀
