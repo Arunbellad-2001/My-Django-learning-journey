@@ -714,3 +714,249 @@ The parent template provides the common layout, and the child template adds its 
 - How to reuse a common HTML layout across multiple pages.
 
 **Day 3 completed – Successfully connected HTML templates to Django, displayed dynamic content, and learned Template Inheritance!** 🚀
+
+# Day 4 – Adding Two Numbers Using Django
+
+## 1. What I Learned Today
+
+Today, I learned how to:
+- Create an HTML form in Django.
+- Get input from users.
+- Send form data to Django views.
+- Use the GET method to receive form data.
+- Access form values using `request.GET`.
+- Convert string values into integers using `int()`.
+- Perform addition using Python.
+- Display the result on another HTML page.
+
+## 2. Creating an HTML Form
+
+First, open `home.html` and create a form to get two numbers from the user.
+
+**home.html**
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Addition of Two Numbers</h1>
+
+<form action="add">
+    Enter First Number:
+    <input type="text" name="num1"><br><br>
+
+    Enter Second Number:
+    <input type="text" name="num2"><br><br>
+
+    <input type="submit" value="Add">
+
+</form>
+
+{% endblock %}
+```
+
+### Explanation
+
+- `<form>` – Creates an HTML form.
+- `action="add"` – Sends the form data to the `add` URL.
+- `<input>` – Creates an input field.
+- `name="num1"` – Gives a name to the first input field.
+- `name="num2"` – Gives a name to the second input field.
+- `type="submit"` – Creates a button to submit the form.
+
+## 3. Creating a Result HTML Page
+
+Create another HTML file named `result.html` inside the Templates folder.
+
+**result.html**
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Addition Result</h1>
+
+Result: {{ result }}
+
+{% endblock %}
+```
+
+### Explanation
+
+- `extends` – Inherits the common layout from `base.html`.
+- `block content` – Defines the section for page content.
+- `{{ result }}` – Displays the result received from Python.
+
+## 4. Adding URL Routing
+
+Open `calc/urls.py` and add a new URL path.
+
+**calc/urls.py**
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('add', views.add, name='add'),
+]
+```
+
+### Explanation
+
+- `path('add', views.add, name='add')` connects the `add` URL to the `add()` view function.
+- When the user submits the form, Django calls the `add()` function.
+
+## 5. Creating the Addition Function in views.py
+
+Open `calc/views.py` and write the following code.
+
+**calc/views.py**
+
+```python
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')
+
+def add(request):
+    val1 = int(request.GET["num1"])
+    val2 = int(request.GET["num2"])
+
+    res = val1 + val2
+
+    return render(request, 'result.html', {'result': res})
+```
+
+### Explanation
+
+| Code | Purpose |
+|---|---|
+| `request.GET["num1"]` | Gets the first number from the form |
+| `request.GET["num2"]` | Gets the second number from the form |
+| `int()` | Converts the input string into an integer |
+| `val1 + val2` | Adds the two numbers |
+| `render()` | Displays the result HTML page |
+| `{'result': res}` | Sends the result to the HTML page |
+
+**Important:** HTML form values are received as strings. We use `int()` to convert them into integers before performing addition.
+
+## 6. Run the Django Server
+
+Open CMD inside your Django project directory.
+
+Activate the virtual environment if it is not already active:
+
+```cmd
+workon AS
+```
+
+Run the server:
+
+```cmd
+python manage.py runserver
+```
+
+Open this URL in your browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+## 7. Expected Output
+
+### Home Page
+
+```text
+Addition of Two Numbers
+
+Enter First Number:  20
+
+Enter Second Number:  30
+
+              [Add]
+```
+
+### Result Page
+
+```text
+Addition Result
+
+Result: 50
+```
+
+## 8. How It Works
+
+```text
+        User Opens Website
+                |
+                v
+           home.html
+                |
+                v
+       Enter Two Numbers
+                |
+                v
+          Submit Form
+                |
+                v
+         calc/urls.py
+                |
+                v
+          views.add()
+                |
+                v
+       request.GET["num1"]
+       request.GET["num2"]
+                |
+                v
+        Convert into int()
+                |
+                v
+          Add Two Numbers
+                |
+                v
+          result.html
+                |
+                v
+        Display Final Result
+```
+
+## 9. Important Django Topics Learned
+
+| Topic | Meaning |
+|---|---|
+| HTML Forms | Used to collect input from users |
+| Form Action | Specifies where form data is submitted |
+| GET Method | Sends form data through the URL |
+| `request.GET` | Accesses data submitted using GET |
+| Type Conversion | Converts strings into integers |
+| URL Routing | Connects URLs to view functions |
+| View Function | Handles user requests and application logic |
+| Context Dictionary | Sends Python data to HTML |
+| Dynamic Content | Displays Python values inside HTML |
+
+## 10. Practice Tasks
+
+Try these tasks yourself:
+
+1. Create a program to subtract two numbers.
+2. Create a program to multiply two numbers.
+3. Create a program to divide two numbers.
+4. Display all four operations on the result page.
+
+## 11. What I Learned Today
+
+- How to create HTML forms.
+- How to collect user input.
+- How to use the GET method.
+- How to access form data using `request.GET`.
+- How to convert strings into integers.
+- How to perform calculations in Django views.
+- How to pass results from Python to HTML.
+- How to display results on another HTML page.
+
+**Day 4 completed – Successfully created a Django application that takes two numbers from the user and displays their sum!** 🚀
