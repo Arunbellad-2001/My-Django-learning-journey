@@ -443,3 +443,274 @@ When a user opens the website, Django follows this process:
 - How URL routing works in Django.
 
 **Day 2 completed – Successfully created my first Django app and displayed Hello World in the browser!** 🚀
+
+# Day 3 – Django Template Language (DTL) and HTML Templates
+
+## 1. What is Django Template Language (DTL)?
+
+DTL stands for **Django Template Language**.
+
+It is used to display dynamic data and add simple logic inside HTML files.
+
+Using DTL, we can:
+- Display Python variables in HTML.
+- Use conditions (`if` and `else`).
+- Use loops (`for`).
+- Reuse HTML layouts using template inheritance.
+
+**Example:**
+
+```html
+<h1>Hello {{ name }}!</h1>
+```
+
+Here, `{{ name }}` displays the value of the variable passed from Python.
+
+## 2. Connecting HTML Templates to Django
+
+### Step 1: Configure the Templates Folder
+
+1. Open `settings.py`.
+2. Find the `TEMPLATES` section.
+3. Add the Templates folder path inside `DIRS`.
+
+First, import `os` at the top of `settings.py`:
+
+```python
+import os
+```
+
+Update the `DIRS` setting:
+
+```python
+'DIRS': [os.path.join(BASE_DIR, 'Templates')],
+```
+
+**Note:** The folder name in the setting must match the actual folder name.
+
+### Step 2: Create an HTML File
+
+Create a folder named `Templates` in the main project directory (the folder containing `manage.py`).
+
+Inside the folder, create:
+
+```text
+Templates/
+    home.html
+```
+
+### Step 3: Render the HTML File Using views.py
+
+Open `calc/views.py`.
+
+```python
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')
+```
+
+**Explanation:**
+
+- `render()` connects the HTML file to the Django view.
+- `'home.html'` is the HTML file we want to display.
+- `request` contains information about the user's request.
+
+## 3. Displaying Dynamic Content in HTML
+
+Dynamic content means displaying values from Python inside an HTML page.
+
+### Step 1: Pass Data from views.py
+
+```python
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html', {'name': 'Arun'})
+```
+
+Here:
+
+- `name` is the variable name.
+- `'Arun'` is the value passed from Python.
+- The dictionary `{}` is called the context data.
+
+### Step 2: Display the Value in home.html
+
+```html
+<h1>Hello {{ name }}!!!</h1>
+```
+
+### Expected Output
+
+```text
+Hello Arun!!!
+```
+
+If we change the value in `views.py`:
+
+```python
+return render(request, 'home.html', {'name': 'Rahul'})
+```
+
+The browser displays:
+
+```text
+Hello Rahul!!!
+```
+
+We don't need to change the HTML file every time.
+
+## 4. Changing Background Colour Using HTML
+
+We can change the background colour of a webpage using the HTML `bgcolor` attribute.
+
+For example:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Django Project</title>
+</head>
+<body bgcolor="cyan">
+
+    <h1>Hello Arun!</h1>
+
+</body>
+</html>
+```
+
+This displays the webpage with a cyan background.
+
+## 5. Django Template Inheritance
+
+Django Template Inheritance allows us to create one common HTML file and reuse its layout in other HTML files.
+
+For example:
+- `base.html` – Parent template.
+- `home.html` – Child template.
+- `about.html` – Another child template.
+
+### Step 1: Create base.html
+
+Create a file named `base.html` inside the Templates folder.
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Django Project</title>
+</head>
+
+<body bgcolor="cyan">
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
+```
+
+**Explanation:**
+
+- `{% block content %}` defines a section that child templates can replace.
+- `{% endblock %}` closes the block.
+
+### Step 2: Create home.html
+
+Open `home.html` and write:
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Hello {{ name }}!!!</h1>
+<p>Welcome to my Django project.</p>
+
+{% endblock %}
+```
+
+**Explanation:**
+
+- `{% extends 'base.html' %}` – Inherits the parent template.
+- `{% block content %}` – Defines the section where child-page content appears.
+- `{% endblock %}` – Ends the block.
+
+### Step 3: Run the Django Server
+
+```cmd
+python manage.py runserver
+```
+
+Open the browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+### Expected Output
+
+You will see:
+- Cyan background.
+- Hello Arun!!!
+- Welcome to my Django project.
+
+## 6. How Template Inheritance Works
+
+```text
+           base.html
+        (Parent Template)
+               |
+               |
+        {% block content %}
+               |
+               v
+           home.html
+        (Child Template)
+               |
+               v
+       Final HTML Page
+        Displayed in Browser
+```
+
+The parent template provides the common layout, and the child template adds its own content.
+
+## 7. Important DTL Syntax – Quick Revision
+
+| Syntax | Purpose |
+|---|---|
+| `{{ variable }}` | Displays a variable value |
+| `{% extends %}` | Inherits another template |
+| `{% block %}` | Defines a replaceable section |
+| `{% endblock %}` | Ends a block |
+| `{% if %}` | Checks a condition |
+| `{% else %}` | Runs when the condition is false |
+| `{% for %}` | Repeats content using a loop |
+
+**Remember:** Django template tags are case-sensitive. Always write `block`, not `Block`.
+
+## 8. Important Concepts to Remember
+
+| Concept | Meaning |
+|---|---|
+| DTL | Django Template Language |
+| `render()` | Connects a view with an HTML template |
+| Context | Data passed from Python to HTML |
+| `{{ }}` | Displays dynamic values |
+| `base.html` | Common parent HTML template |
+| Template Inheritance | Reuses a common HTML layout |
+
+## 9. What I Learned Today
+
+- What is Django Template Language (DTL)?
+- How to connect HTML templates to Django.
+- How to configure the Templates folder in `settings.py`.
+- How to render HTML files using `render()`.
+- How to pass dynamic content from Python to HTML.
+- How to change the webpage background colour.
+- How to use Django Template Inheritance.
+- How to reuse a common HTML layout across multiple pages.
+
+**Day 3 completed – Successfully connected HTML templates to Django, displayed dynamic content, and learned Template Inheritance!** 🚀
