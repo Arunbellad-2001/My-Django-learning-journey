@@ -1386,3 +1386,201 @@ We will use the static files setup learned in the previous session.
 6. Run the server and display the page.
 
 **Today's Goal:** Learn how to reuse existing HTML templates in Django instead of creating every page from scratch.
+
+# Day 6 – Connecting Static Files to Django
+
+**Date:** 01 November 2026  
+**Session:** 3
+
+## 1. What are Static Files in Django?
+
+Static files are files used to make a website look better and more attractive.
+
+Examples of static files:
+
+- CSS files – Used to add styles and colours.
+- JavaScript files – Used to add actions and functionality.
+- Images – Used to display pictures and logos.
+- Fonts – Used to change text styles.
+
+Django uses a special folder called `static` to manage these files.
+
+## 2. Connecting Static Files to Django
+
+### Step 1: Create a Static Folder
+
+Inside the main Django project directory (the folder containing `manage.py`), create a folder named:
+
+```text
+static
+```
+
+### Step 2: Add External Static Files
+
+Copy the required static files into the `static` folder.
+
+For example:
+
+```text
+static/
+│
+├── css/
+│   └── style.css
+│
+├── js/
+│   └── script.js
+│
+└── images/
+    └── logo.png
+```
+
+### Step 3: Update settings.py
+
+Open `settings.py` in the main Django project folder.
+
+Find the `STATIC_URL` setting and update it like this:
+
+```python
+import os
+
+STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+```
+
+### Explanation
+
+| Setting | Purpose |
+|---|---|
+| `STATIC_URL` | Defines the URL used to access static files |
+| `STATICFILES_DIRS` | Tells Django where to find static files during development |
+| `STATIC_ROOT` | Defines the folder where collected static files are stored |
+
+**Note:** `STATICFILES_DIRS` and `STATIC_ROOT` have different purposes. Do not use the same folder for both.
+
+### Step 4: Collect Static Files
+
+Open CMD inside your Django project directory.
+
+Activate the virtual environment:
+
+```cmd
+workon AS
+```
+
+Run the following command:
+
+```cmd
+python manage.py collectstatic
+```
+
+This command collects static files from the different static folders and copies them into the folder specified by `STATIC_ROOT`.
+
+In my project, the collected files are stored inside the `assets` folder.
+
+**Note:** `collectstatic` is mainly used when preparing a Django project for deployment. During local development with `DEBUG = True`, Django can normally serve static files directly without running this command every time.
+
+### Step 5: Connect Static Files in HTML
+
+Open your HTML file, for example `home.html` or `index.html`.
+
+First, add this line at the top of the HTML file:
+
+```django
+{% load static %}
+```
+
+This loads Django's static template tag.
+
+Now, update the paths of CSS, JavaScript and image files.
+
+**Example: Connecting CSS**
+
+```html
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+```
+
+**Example: Connecting JavaScript**
+
+```html
+<script src="{% static 'js/script.js' %}"></script>
+```
+
+**Example: Connecting an Image**
+
+```html
+<img src="{% static 'images/logo.png' %}" alt="Logo">
+```
+
+We can use `{% static %}` to connect different static files wherever required in the HTML page.
+
+### Step 6: Run the Django Server
+
+Open CMD and run:
+
+```cmd
+python manage.py runserver
+```
+
+Open the browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+Now the CSS, JavaScript and image files should load in the browser if their paths and settings are correct.
+
+## 3. How Static Files Work in Django
+
+```text
+          Django Project
+                |
+                v
+           settings.py
+                |
+                v
+          STATICFILES_DIRS
+                |
+                v
+           static folder
+          /     |      \
+         v      v       v
+        CSS    JS     Images
+          \     |      /
+                |
+                v
+          HTML Template
+                |
+                v
+          Browser Output
+```
+
+## 4. Important Django Static File Commands and Syntax
+
+| Command / Syntax | Purpose |
+|---|---|
+| `STATIC_URL` | Defines the static file URL |
+| `STATICFILES_DIRS` | Defines additional static file locations |
+| `STATIC_ROOT` | Defines the collection destination |
+| `python manage.py collectstatic` | Collects static files |
+| `{% load static %}` | Loads the static template tag |
+| `{% static 'css/style.css' %}` | Connects a CSS file |
+| `{% static 'js/script.js' %}` | Connects a JavaScript file |
+| `{% static 'images/logo.png' %}` | Connects an image |
+
+## 5. What I Learned Today
+
+- What static files are in Django.
+- How to create a static folder.
+- How to add CSS, JavaScript and image files.
+- How to configure static file settings in `settings.py`.
+- Difference between `STATIC_URL`, `STATICFILES_DIRS` and `STATIC_ROOT`.
+- How to use the `collectstatic` command.
+- How to load static files inside HTML using `{% load static %}`.
+- How to connect CSS, JavaScript and images using `{% static %}`.
+
+**Day 6 completed – Successfully learned how to connect static files to Django HTML templates!** 🚀
