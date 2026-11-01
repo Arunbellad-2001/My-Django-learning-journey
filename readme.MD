@@ -1186,3 +1186,203 @@ Notice that the numbers are not displayed in the browser address bar when using 
 - How to display the result on an HTML page.
 
 **Day 5 completed – Successfully changed my Django form from GET to POST and learned about CSRF protection!** 🚀
+
+# Day 6 – Session 2: Connecting External HTML Templates to Django
+
+**Date:** 01 November 2026
+
+## What I Learned
+
+Today, I learned how to download an existing HTML template from a website and connect it to a Django project using a separate Django app.
+
+We can use ready-made HTML templates instead of creating every HTML page from scratch.
+
+## Step 1: Download an HTML Template
+
+1. Open the [Colorlib website](https://colorlib.com/wp/templates/).
+2. Choose a travel website template.
+3. Download the template.
+4. Extract the ZIP file.
+5. Find the main HTML file, usually named `index.html`.
+
+**Note:** A downloaded template may contain CSS, JavaScript, images, and other files. We need to keep these files in the correct folders so the website design works properly.
+
+## Step 2: Create a New Django App
+
+Open CMD and go to your Django project folder.
+
+Activate your virtual environment:
+
+```cmd
+workon AS
+```
+
+Create a new app named `Travel`:
+
+```cmd
+python manage.py startapp Travel
+```
+
+Django creates a new folder named `Travel`.
+
+## Step 3: Add the HTML File to Templates
+
+Inside the `Travel` app, create a folder named `templates`.
+
+Copy the downloaded `index.html` file into it.
+
+Your folder structure should look like this:
+
+```text
+Travel/
+│
+├── migrations/
+├── templates/
+│   └── index.html
+│
+├── admin.py
+├── apps.py
+├── models.py
+├── tests.py
+└── views.py
+```
+
+**Why do we create a templates folder?**
+
+Django uses templates to display HTML pages in the browser.
+
+## Step 4: Create urls.py Inside the Travel App
+
+Django does not automatically create `urls.py` when we create an app. So, create it manually inside the `Travel` folder.
+
+Add this code:
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+```
+
+**Explanation:**
+
+- `path()` defines a URL.
+- `views.index` connects the URL to the index view.
+- `name='index'` gives a name to this URL.
+
+## Step 5: Update views.py
+
+Open `Travel/views.py` and add this code:
+
+```python
+from django.shortcuts import render
+
+def index(request):
+    return render(request, "index.html")
+```
+
+**Explanation:**
+
+- `render()` is used to display an HTML template.
+- `index.html` is the HTML file inside the templates folder.
+- `request` contains information about the browser request.
+
+## Step 6: Connect the Travel App to the Main Project
+
+Open the main project's `urls.py` file.
+
+Import `include` and add the Travel app URL:
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('', include('Travel.urls')),
+    path('admin/', admin.site.urls),
+]
+```
+
+**Explanation:**
+
+`include('Travel.urls')` connects the main project URL to the Travel app URL.
+
+When a user visits the website's home page, Django checks the Travel app's URL patterns and calls the `index` view.
+
+**Important:** Make sure the app name and folder name match. Here, the app is named `Travel`, so use `Travel.urls`.
+
+## Step 7: Run the Django Server
+
+In CMD, run:
+
+```cmd
+python manage.py runserver
+```
+
+Open this URL in your browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+You should see your downloaded travel website's HTML page.
+
+## Django Request Flow
+
+```text
+Browser
+   |
+   v
+Main Project urls.py
+   |
+   v
+Travel/urls.py
+   |
+   v
+Travel/views.py
+   |
+   v
+index.html
+   |
+   v
+Browser displays the page
+```
+
+## Important Note: CSS, JavaScript and Images
+
+If your HTML page opens but the design is missing, the CSS, JavaScript, or image files may not be connected.
+
+We need to connect those files using Django static files.
+
+We will use the static files setup learned in the previous session.
+
+## Quick Revision
+
+| File | Purpose |
+|---|---|
+| `Travel/urls.py` | Defines app URLs |
+| `Travel/views.py` | Handles requests |
+| `Travel/templates/index.html` | Contains the HTML page |
+| Main project `urls.py` | Connects the Travel app |
+
+## What I Learned Today
+
+- How to download an external HTML template.
+- How to create a new Django app.
+- How to add an HTML file inside the templates folder.
+- How to create `urls.py` manually.
+- How to connect app URLs to the main project.
+- How to display an external HTML page using `render()`.
+
+## Practice Tasks
+
+1. Download another HTML template from Colorlib.
+2. Create a new Django app named `Portfolio`.
+3. Add its `index.html` file inside the templates folder.
+4. Create `urls.py` and `views.py`.
+5. Connect the app to the main project.
+6. Run the server and display the page.
+
+**Today's Goal:** Learn how to reuse existing HTML templates in Django instead of creating every page from scratch.
