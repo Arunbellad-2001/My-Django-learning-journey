@@ -960,3 +960,229 @@ Try these tasks yourself:
 - How to display results on another HTML page.
 
 **Day 4 completed – Successfully created a Django application that takes two numbers from the user and displays their sum!** 🚀
+
+# Day 5 – POST Method and CSRF Protection in Django
+
+**Date:** 01 November 2026
+
+## 1. What I Learned Today
+
+Today, I learned:
+- Difference between GET and POST methods.
+- How to send form data using the POST method.
+- How to hide form data from the browser address bar.
+- What is CSRF protection in Django?
+- How to use `{% csrf_token %}` in HTML forms.
+- How to access POST data using `request.POST`.
+
+## 2. Difference Between GET and POST Methods
+
+In Django, GET and POST are two HTTP methods used to send data between the browser and the server.
+
+### GET Method
+
+- GET is used to request data from the server.
+- Form data is sent through the URL.
+- Data is visible in the browser address bar.
+- It is commonly used for searching and filtering.
+
+**Example URL:**
+
+```text
+http://127.0.0.1:8000/add?num1=4&num2=4
+```
+
+Here, `num1=4` and `num2=4` are visible in the URL.
+
+### POST Method
+
+- POST is used to send data to the server.
+- Form data is sent in the request body.
+- Form data does not appear in the URL.
+- It is commonly used for submitting forms and saving data.
+
+**Important:** POST hides form values from the address bar, but it does not automatically encrypt or secure the data. HTTPS is needed to protect data while it travels between the browser and server.
+
+## 3. Changing GET Method to POST Method
+
+Previously, I used the GET method to add two numbers.
+
+Now, I changed the form to use the POST method.
+
+### Step 1: Update home.html
+
+Open `home.html` and update the form.
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Addition of Two Numbers</h1>
+
+<form action="add" method="post">
+
+    {% csrf_token %}
+
+    Enter First Number:
+    <input type="text" name="num1"><br><br>
+
+    Enter Second Number:
+    <input type="text" name="num2"><br><br>
+
+    <input type="submit" value="Add">
+
+</form>
+
+{% endblock %}
+```
+
+### Explanation
+
+- `method="post"` – Sends form data using the POST method.
+- `{% csrf_token %}` – Adds a CSRF security token to the form.
+- `name="num1"` – Identifies the first input value.
+- `name="num2"` – Identifies the second input value.
+
+## 4. What is CSRF?
+
+CSRF stands for **Cross-Site Request Forgery**.
+
+It is a type of attack where an attacker tries to make a user perform an unwanted action on a website without their knowledge.
+
+Django provides built-in CSRF protection to help prevent these attacks.
+
+### Why did I get the CSRF error?
+
+When I changed the form method from GET to POST, I received this error:
+
+```text
+CSRF verification failed. Request aborted.
+```
+
+This happened because Django checks POST requests for a valid CSRF token.
+
+### How did I fix the error?
+
+I added this template tag inside the HTML form:
+
+```html
+{% csrf_token %}
+```
+
+Django automatically generates and adds the required CSRF token.
+
+**Important:** Always place `{% csrf_token %}` inside the POST form when using Django's CSRF protection.
+
+## 5. Updating views.py
+
+Previously, I used `request.GET` to receive form data.
+
+Now, I changed it to `request.POST`.
+
+Open `calc/views.py`:
+
+```python
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')
+
+def add(request):
+    val1 = int(request.POST['num1'])
+    val2 = int(request.POST['num2'])
+
+    res = val1 + val2
+
+    return render(request, 'result.html', {'result': res})
+```
+
+### Explanation
+
+| Code | Purpose |
+|---|---|
+| `request.GET` | Gets data sent using GET |
+| `request.POST` | Gets data sent using POST |
+| `request.POST['num1']` | Gets the first number |
+| `request.POST['num2']` | Gets the second number |
+| `int()` | Converts string into integer |
+| `val1 + val2` | Adds the two numbers |
+| `render()` | Displays the result page |
+
+## 6. Run the Django Server
+
+Open CMD inside your Django project directory.
+
+Activate the virtual environment:
+
+```cmd
+workon AS
+```
+
+Start the server:
+
+```cmd
+python manage.py runserver
+```
+
+Open the browser:
+
+```text
+http://127.0.0.1:8000/
+```
+
+Enter two numbers and click the Add button.
+
+### Expected Output
+
+**Input:**
+
+```text
+First Number: 4
+Second Number: 4
+```
+
+**Result:**
+
+```text
+Addition Result
+
+Result: 8
+```
+
+Notice that the numbers are not displayed in the browser address bar when using POST.
+
+## 7. GET vs POST – Quick Revision
+
+| GET | POST |
+|---|---|
+| Sends data through URL parameters | Sends data in the request body |
+| Data is visible in the URL | Form values are not shown in the URL |
+| Can be bookmarked with its parameters | Cannot be bookmarked with submitted form data in the same way |
+| Commonly used for searching | Commonly used for submitting forms |
+| Access data using `request.GET` | Access data using `request.POST` |
+
+## 8. Important Concepts Learned Today
+
+| Concept | Meaning |
+|---|---|
+| HTTP Methods | Methods used for communication between browser and server |
+| GET | Used to request data |
+| POST | Used to submit data |
+| CSRF | Cross-Site Request Forgery |
+| CSRF Token | Helps Django verify that a POST request comes from a valid form |
+| `request.GET` | Accesses GET form data |
+| `request.POST` | Accesses POST form data |
+| HTTPS | Encrypts data while it travels between browser and server |
+
+## 9. What I Learned Today
+
+- How GET and POST methods work.
+- How to change an HTML form from GET to POST.
+- How POST sends data without displaying form values in the URL.
+- Why Django gives a CSRF verification error.
+- How to fix the CSRF error using `{% csrf_token %}`.
+- How to receive POST data using `request.POST`.
+- How to display the result on an HTML page.
+
+**Day 5 completed – Successfully changed my Django form from GET to POST and learned about CSRF protection!** 🚀
