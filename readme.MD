@@ -1584,3 +1584,135 @@ Now the CSS, JavaScript and image files should load in the browser if their path
 - How to connect CSS, JavaScript and images using `{% static %}`.
 
 **Day 6 completed – Successfully learned how to connect static files to Django HTML templates!** 🚀
+
+# 02/11/2026 – Django Session 3
+## Topic: Passing Dynamic Data into HTML
+
+### Part 1: Passing Dynamic Data from Views to HTML
+
+**Step 1: Open `views.py`**
+
+Use the `render()` function to pass data from Python to an HTML file.
+
+```python
+def index(request):
+    return render(request, "index.html", {'prise': 400})
+```
+
+Here:
+- `index.html` – HTML template file.
+- `prise` – Variable name.
+- `400` – Value passed from Python to HTML.
+
+**Step 2: Open `index.html`**
+
+Use Django Template Language to display the value.
+
+```html
+<div class="prise">
+    {{ prise }}
+</div>
+```
+
+**Step 3: Refresh the browser**
+
+The output will display:
+
+```text
+400
+```
+
+---
+
+### Part 2: Passing Model Objects into HTML
+
+In this part, we create a model class and pass its object from the view to the HTML template.
+
+**Step 1: Open `models.py`**
+
+Create a Django model.
+
+```python
+from django.db import models
+
+class Destination(models.Model):
+    name = models.CharField(max_length=100)
+    img = models.CharField(max_length=200)
+    desc = models.TextField()
+    price = models.IntegerField()
+```
+
+Explanation:
+
+- `models.Model` – Makes this class a Django database model.
+- `name` – Stores the destination name.
+- `img` – Stores the image path.
+- `desc` – Stores the destination description.
+- `price` – Stores the destination price.
+
+**Step 2: Open `views.py`**
+
+Import the model and create an object.
+
+```python
+from .models import Destination
+
+def index(request):
+
+    dest1 = Destination()
+    dest1.name = 'Bengaluru'
+    dest1.desc = 'The city is never sleep'
+    dest1.price = 800
+
+    return render(request, "index.html", {'dest1': dest1})
+```
+
+Here:
+- `Destination()` – Creates a model object.
+- `dest1.name` – Assigns the destination name.
+- `dest1.desc` – Assigns the description.
+- `dest1.price` – Assigns the price.
+- `{'dest1': dest1}` – Passes the object to the HTML template.
+
+**Step 3: Open `index.html`**
+
+Display the object's values using Django Template Language.
+
+```html
+<a href="destination_details.html">
+    <h3>{{ dest1.name }}</h3>
+</a>
+
+<p>{{ dest1.desc }}</p>
+
+<p>{{ dest1.price }}</p>
+```
+
+**Expected output:**
+
+```text
+Bengaluru
+The city is never sleep
+800
+```
+
+---
+
+### Important Points to Remember
+
+1. `render()` is used to send data from views to HTML.
+2. `{{ variable }}` displays a variable in an HTML template.
+3. Django models are created inside `models.py`.
+4. `models.Model` is used as the parent class for Django models.
+5. We use dot notation to access object attributes in HTML, such as `{{ dest1.name }}`.
+6. The dictionary key in `render()` must match the variable name used in HTML.
+
+### Practice Task
+
+Create another destination object:
+
+- Name: Mumbai
+- Description: Financial capital of India
+- Price: 1200
+
+Display its name, description and price in `index.html`.
