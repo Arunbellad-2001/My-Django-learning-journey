@@ -1716,3 +1716,243 @@ Create another destination object:
 - Price: 1200
 
 Display its name, description and price in `index.html`.
+
+========================================================================================================================================
+# Day 7 – Passing Dynamic Data into HTML (Part 2)
+
+**Date:** 03 November 2026
+
+## What I Learned
+
+Today, I learned how to pass multiple dynamic objects from a Django view to an HTML template and display them using a `for` loop.
+
+Instead of writing the same HTML section multiple times, we can write it once and let Django repeat it for every item in a list.
+
+## Step 1: Open index.html
+
+Open the `index.html` file inside the `Travel/templates` folder.
+
+At the top of the HTML file, add:
+
+```django
+{% load static %}
+```
+
+**Why do we use this?**
+
+`{% load static %}` loads Django's static template tags. We use them to connect CSS, JavaScript, and image files.
+
+## Step 2: Use a For Loop in HTML
+
+Find the section where you want to display multiple destinations.
+
+For example, if your HTML template has a destination card with an image, name, description, and price, place that card inside a Django `for` loop.
+
+```django
+{% for Dest in Dests %}
+
+    <h2>{{ Dest.name }}</h2>
+    <p>{{ Dest.desc }}</p>
+    <p>Price: {{ Dest.prise }}</p>
+
+{% endfor %}
+```
+
+**Explanation:**
+
+- `{% for Dest in Dests %}` starts the loop.
+- `Dests` is the list passed from the Django view.
+- `Dest` represents one destination object at a time.
+- `{{ Dest.name }}` displays the destination name.
+- `{{ Dest.desc }}` displays its description.
+- `{{ Dest.prise }}` displays its price.
+- `{% endfor %}` ends the loop.
+
+**Important:** In your actual downloaded HTML template, put the `{% for %}` and `{% endfor %}` tags around the complete destination card HTML section. This repeats the entire card, not just the image.
+
+## Step 3: Create Multiple Destination Objects
+
+Open `Travel/models.py`.
+
+For this practice example, we are creating normal Python objects inside the view. These are not database records.
+
+The `Destination` class can be defined like this:
+
+```python
+class Destination:
+    name = ''
+    desc = ''
+    prise = 0
+```
+
+We can create multiple objects from this class.
+
+For example:
+
+```python
+Dest1 = Destination()
+Dest1.name = 'Bengaluru'
+Dest1.desc = 'The city is never asleep'
+Dest1.prise = 800
+
+Dest2 = Destination()
+Dest2.name = 'Mumbai'
+Dest2.desc = 'The city of dreams'
+Dest2.prise = 1200
+
+Dest3 = Destination()
+Dest3.name = 'Goa'
+Dest3.desc = 'Beautiful beaches and relaxing views'
+Dest3.prise = 1500
+```
+
+Now create a list containing all the objects:
+
+```python
+Dests = [Dest1, Dest2, Dest3]
+```
+
+**Explanation:**
+
+- `Destination()` creates an object.
+- Each object stores its own name, description, and price.
+- `Dests` is a Python list containing all the destination objects.
+- We pass this list to the HTML template.
+
+**Note:** We are using sample Python objects for learning. Later, we can store destinations in a Django database using actual models.
+
+## Step 4: Pass the List from views.py to HTML
+
+Open `Travel/views.py`.
+
+Write the following code:
+
+```python
+from django.shortcuts import render
+from .models import Destination
+
+def index(request):
+
+    Dest1 = Destination()
+    Dest1.name = 'Bengaluru'
+    Dest1.desc = 'The city is never asleep'
+    Dest1.prise = 800
+
+    Dest2 = Destination()
+    Dest2.name = 'Mumbai'
+    Dest2.desc = 'The city of dreams'
+    Dest2.prise = 1200
+
+    Dest3 = Destination()
+    Dest3.name = 'Goa'
+    Dest3.desc = 'Beautiful beaches and relaxing views'
+    Dest3.prise = 1500
+
+    Dests = [Dest1, Dest2, Dest3]
+
+    return render(request, "index.html", {'Dests': Dests})
+```
+
+**Explanation:**
+
+`{'Dests': Dests}` is the context dictionary.
+
+- First `Dests`: the variable name used in the HTML file.
+- Second `Dests`: the Python list created in the view.
+
+This sends the list from Python to the HTML template.
+
+## Step 5: Run the Django Server
+
+Open CMD and activate your virtual environment:
+
+```cmd
+workon AS
+```
+
+Go to your project folder if you are not already there:
+
+```cmd
+cd /d D:\Projecs\My_First_Django_Project
+```
+
+Run the server:
+
+```cmd
+python manage.py runserver
+```
+
+Open this URL:
+
+```text
+http://127.0.0.1:8000/
+```
+
+You should see all three destinations displayed on the page.
+
+## How the For Loop Works
+
+Suppose the Python list contains three objects:
+
+```text
+Dests = [Dest1, Dest2, Dest3]
+```
+
+Django repeats the HTML card three times:
+
+| Loop | Destination | Price |
+|---|---|---:|
+| First time | Bengaluru | 800 |
+| Second time | Mumbai | 1200 |
+| Third time | Goa | 1500 |
+
+## Django Data Flow
+
+```text
+views.py
+   |
+   v
+Create Destination Objects
+   |
+   v
+Store Objects in Dests List
+   |
+   v
+Pass Dests to index.html
+   |
+   v
+Django For Loop
+   |
+   v
+Display All Destination Cards
+```
+
+## Quick Revision
+
+| Django Code | Meaning |
+|---|---|
+| `{% load static %}` | Loads static template tags |
+| `{% for Dest in Dests %}` | Starts a loop |
+| `{{ Dest.name }}` | Displays destination name |
+| `{{ Dest.desc }}` | Displays description |
+| `{{ Dest.prise }}` | Displays price |
+| `{% endfor %}` | Ends the loop |
+| `render()` | Sends data to an HTML template |
+
+## What I Learned Today
+
+- How to pass multiple objects from a Django view to HTML.
+- How to create Python objects.
+- How to store multiple objects in a list.
+- How to pass a list using the `render()` function.
+- How to use a Django `for` loop.
+- How to display dynamic data inside repeated HTML cards.
+
+## Practice Tasks
+
+1. Add two more destinations to the list.
+2. Display the destination name, description, and price.
+3. Change the prices and check the browser output.
+4. Try displaying only the destination names using a `for` loop.
+
+**Today's Goal:** Display multiple destinations dynamically using Python objects, lists, and Django template loops.
